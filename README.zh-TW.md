@@ -1,3 +1,8 @@
+> **翻譯說明。** 這份文件是上游 README 的繁體中文（台灣）翻譯，說明這個專案是什麼、有哪些功能，以及如何安裝與使用。程式碼區塊、指令、連結與檔名都保持原文。若譯文與原文有出入，以原文為準。
+>
+> - 英文原文：[`README.md`](README.md)
+> - 上游儲存庫：[wheresryan22/anatomy](https://github.com/wheresryan22/anatomy)（[上游 README](https://github.com/wheresryan22/anatomy/blob/main/README.md)）
+
 <h1 align="center">Anatomy</h1>
 
 <p align="center"><b>一個 Claude skill，透過將概念建造成真實可運作的物件來解釋想法。</b><br>同時支援 Antigravity、OpenCode、Codex 與 MiniMax Code。<br>精心製作的互動式等角投影圖，包含許多小而精準的零件，使用 SVG、WebGL 與 3D。</p>
@@ -22,7 +27,7 @@
 <p align="center">
   <a href="#quick-start">快速開始</a> ·
   <a href="#gallery">圖庫</a> ·
-  <a href="#what-it-makes">它能製作什麼</a> ·
+  <a href="#what-it-makes">它會做出什麼</a> ·
   <a href="#install">安裝</a> ·
   <a href="#usage">使用方式</a> ·
   <a href="#examples">範例</a> ·
@@ -38,11 +43,11 @@
 
 ---
 
-向 Claude 要求一張解釋技術概念的圖，Anatomy 會讓它發明一個「運作方式本身就是該概念」的實體物件。一個在沒有變化時跳過工作的快取鍵，變成只有每個銷都對齊時才會轉動的銷釘彈子鎖。一個服務多個畫布的 GPU 上下文，變成單一列印頭巡訪 16 個井的龍門繪圖機。
+向 Claude 要求一張解釋技術概念的圖，Anatomy 會讓它發明一個「運作方式本身就是該概念」的實體物件。一個在內容沒變時就略過工作的快取鍵，會變成一把只有每支彈子都對上才轉得動的彈子鎖。一份 GPU context 服務很多塊畫布，會變成龍門式繪圖機，一支列印頭依序走到 16 個孔。
 
-接著 Claude 會用數十個小而實心、有陰影的零件建造這個物件，將它放入帶有標題、提示與即時讀數的框卡片中，讓它在滑鼠指標與鍵盤下平穩移動，並透過放大每個接頭來自我檢查。圖中顯示的每一個數字都來自驅動零件移動的同一個小型模型。
+接著 Claude 用數十個小而實心、有陰影的零件把這個物件做出來，放進一張有外框的卡片，上面有標題、提示與即時讀數，讓它在滑鼠指標與鍵盤下平穩移動，並放大每個接頭檢查自己的成品。圖上每一個數字，都來自那個同時驅動零件的小型模型。
 
-## 快速開始
+<h2 id="quick-start">快速開始</h2>
 
 ```sh
 npx skills add wheresryan22/anatomy -g
@@ -60,30 +65,30 @@ CLI 會詢問要設定哪些 agent（Claude Code、Antigravity、OpenCode、Code
 
 就這樣。不需要 API 金鑰，也不需要 `npm install`：工具包只使用 Node 的內建模組。
 
-## 圖庫
+<h2 id="gallery">圖庫</h2>
 
 <table>
   <tr>
     <td width="50%"><img src=".github/assets/raptor-engine-apart.webp" alt="Raptor 2 引擎在測試台上被拆解：其組件、管路與線束在支架柱之間彼此分開懸掛。"></td>
-    <td width="50%"><img src=".github/assets/ripple-tank.webp" alt="四隻高腳的學校波動水槽，上方有燈臂。振動桿上的兩個探針產生干涉波，其焦散投射到水槽下方的紙幕上。"></td>
+    <td width="50%"><img src=".github/assets/ripple-tank.webp" alt="四隻高腳的學校水波槽，上方有一支燈臂。振動桿上的兩個探針打出干涉波，焦散投在水槽下方的紙幕上。"></td>
   </tr>
   <tr>
-    <td><sub><b>raptor-engine</b>：懸停可拆解成 11 個組件。審計證明沒有管路穿過任何物件，無論靜止、拆解或中間每一幀皆然。</sub></td>
+    <td><sub><b>raptor-engine</b>：游標移上去可拆成 11 個組件。稽核證明沒有任何管子穿過別的東西，靜止、拆開，以及中間每一幀都一樣。</sub></td>
     <td><sub><b>ripple-tank</b>：SVG 裝置疊加兩層 WebGL（紙上的燈光與焦散、水中的反射），由色散與光學模型驅動。</sub></td>
   </tr>
   <tr>
     <td><img src=".github/assets/turning-dial.webp" alt="凸起門板上的密碼轉盤。一隻小金鉻機器人手躺在轉盤上並隨之轉動；一個指尖下方發出綠光。"></td>
-    <td><img src=".github/assets/dial-indicator.webp" alt="支架上的千分表，底座有尺條。其測頭停在滑動托架上三個量塊之一上。"></td>
+    <td><img src=".github/assets/dial-indicator.webp" alt="支架上的千分錶，底座有尺條。其測頭停在滑動托架上三個塊規之一上。"></td>
   </tr>
   <tr>
     <td><sub><b>turning-dial</b>：3D 模式（beta）。拖動轉盤時，約 90 個零件每幀重新投影並重新著色。</sub></td>
-    <td><sub><b>dial-indicator</b>：最小範例，約 300 行。懸停可滑動托架；指針讀取每個量塊。</sub></td>
+    <td><sub><b>dial-indicator</b>：最小的範例，大約 300 行。游標移上去可滑動托架；指針會讀出每一塊塊規。</sub></td>
   </tr>
 </table>
 
 每張截圖皆為 [`examples/`](examples) 中頁面的淺色主題，由 skill 自身的 [`scripts/capture.mjs`](scripts/capture.mjs) 與 [`scripts/drive.mjs`](scripts/drive.mjs) 擷取。已建置的頁面已提交：開啟 `examples/` 中任何 `.html` 即可試用。
 
-## 它能製作什麼
+<h2 id="what-it-makes">它會做出什麼</h2>
 
 三種圖形。三者共享同一套工具包、同一台相機與同一套工藝規則。
 
@@ -91,11 +96,11 @@ CLI 會詢問要設定哪些 agent（Claude Code、Antigravity、OpenCode、Code
 |---|---|---|
 | **SVG** | 核心。實心等角零件，四色調陰影，由後往前繪製，置於帶即時讀數與緩動運動的卡片中。可輸出為獨立 HTML 頁面、內嵌樣式的單獨 `.svg` 檔，或 React/Next.js 元件。 | `dial-indicator`、`desk-computer`、`arcade-cabinet`、`test-rig` |
 | **SVG + WebGL** | 用於線條無法繪製的內容：火焰、排氣、水、焦散、燈光、光暈、蒸汽。著色器在後 SVG 與前 SVG 之間的畫布中執行，使用圖形自身的等角相機，因此位於繪圖內部。無 WebGL 時 SVG 仍可閱讀。 | `raptor-engine`、`ripple-tank` |
-| **3D** <sup>beta</sup> | 真正 3D 轉動的零件：可旋轉的轉盤或轉盤、可彎曲的手指、斷裂並掉落的部件。移動零件每幀由工具包規則重新投影與重新著色；其餘保持靜態藝術。 | `turning-dial` |
+| **3D** <sup>beta</sup> | 會在真正的 3D 裡轉動的零件：會轉的刻度盤或轉盤、會彎的手指、斷開後落下的零件。移動中的零件每一幀都依工具包自己的規則重新投影、重新上色；其餘維持靜態。 | `turning-dial` |
 
 每個圖形可為淺色或深色。淺色是 skill 優先設計的主題（含著色器）。
 
-## 安裝
+<h2 id="install">安裝</h2>
 
 Anatomy 是標準的 [Agent Skill](https://agentskills.io)：根目錄有 `SKILL.md` 的資料夾。本儲存庫即為該資料夾。選擇一種方式安裝：
 
@@ -188,7 +193,7 @@ skill 會啟動無頭 Chrome 來檢查自己的圖形，Chrome 會寫入暫存�
 
 </details>
 
-## 使用方式
+<h2 id="usage">使用方式</h2>
 
 輸入 `/anatomy`（在 Codex 中為 `$anatomy`）並說明圖形應解釋什麼：
 
@@ -229,31 +234,31 @@ skill 會啟動無頭 Chrome 來檢查自己的圖形，Chrome 會寫入暫存�
 
 圖形會以你擁有的原始碼形式交付：一個 Node 建置腳本與它寫出的頁面，或（對於 React）幾何模組、靜態藝術的伺服器元件與一個運動的客戶端元件。工具包會一併提供。
 
-## 範例
+<h2 id="examples">範例</h2>
 
 每個無框架範例都有 Node 建置腳本，會在自身旁邊寫出獨立頁面。加上 `--light` 可使用淺色主題。
 
 | 範例 | 展示內容 | 建置 |
 |---|---|---|
-| [`dial-indicator`](examples/dial-indicator) | 支架上的千分表，下方為量塊托架。最小範例，約 300 行。 | `node examples/dial-indicator/build.mjs` |
+| [`dial-indicator`](examples/dial-indicator) | 支架上的千分錶，下方為塊規托架。最小範例，約 300 行。 | `node examples/dial-indicator/build.mjs` |
 | [`desk-computer`](examples/desk-computer) | 1984 風格桌面電腦，可打字的鍵盤。打出的字會出現在機殼正面平面上繪製的 CRT，關閉時畫面會塌縮成一條線與一個點。約 85 個實體。 | `node examples/desk-computer/build.mjs` |
 | [`arcade-cabinet`](examples/arcade-cabinet) | 直立式街機機台，側板打開。投入一枚硬幣：它會沿投幣滑道滾過投幣開關線進入錢箱，脈衝沿纜線傳至電路板，CRT 暖機進入在傾斜螢幕平面上繪製的吸引模式。約 240 個實體與 15 條纜線。 | `node examples/arcade-cabinet/build.mjs` |
-| [`raptor-engine`](examples/raptor-engine) | 測試台上的 Raptor 2 引擎。可拆解成 11 個組件，WebGL 羽流、激波、飛濱與蒸汽在後 SVG 與前 SVG 之間渲染。密集管路、平滑陰影、淡出與審計的參考範例。建置需數分鐘。 | `node examples/raptor-engine/build.mjs` |
-| [`ripple-tank`](examples/ripple-tank) | 高腳學校波動水槽，上方為紙幕，從 44° 仰角觀看。兩層 WebGL 註冊到等角平面，由 `model.mjs` 中的純模型驅動。 | `node examples/ripple-tank/build.mjs` |
-| [`test-rig`](examples/test-rig) | 來自 React/Next.js 網站的正式圖形：彈簧安裝托架上的玻璃按鈕、軌道上的手指探針，以及讀取傾斜的千分表。53 個實體。無建置腳本：複製到 React 應用即可。 | 無 |
-| [`spot-plate`](examples/spot-plate) | 來自同一網站的第二個圖形：點板上一對對玻璃滴，隨著一扇量規葉片打開而匯合成一塊玻璃。每對由一個距離場繪製。無建置腳本：複製到 React 應用即可。 | 無 |
-| [`turning-dial`](examples/turning-dial) | 3D 模式：真正 3D 轉動的密碼轉盤，上面有小機器人手、三鉐鏈可抬起的手指，以及作為自由體斷裂的艙體。`stress.mjs` 是雜亂工作室中 380 個零件的手，用於效能測量。 | `node examples/turning-dial/build.mjs` |
+| [`raptor-engine`](examples/raptor-engine) | 測試台上的 Raptor 2 引擎。可拆成 11 個組件；WebGL 的羽流、激波、飛濺與蒸汽畫在後層與前層 SVG 之間。這是密集管路、平滑陰影、淡出與稽核的參考範例。建置要幾分鐘。 | `node examples/raptor-engine/build.mjs` |
+| [`ripple-tank`](examples/ripple-tank) | 架在高腳上的學校水波槽，紙幕在水槽下方，從高出水平面 44° 的位置看。兩層 WebGL 對齊等角平面，由 `model.mjs` 裡的純模型驅動。 | `node examples/ripple-tank/build.mjs` |
+| [`test-rig`](examples/test-rig) | 來自一個 React/Next.js 網站、已實際上線的圖：彈簧托架上的玻璃按鈕、軌道上的手指探針，以及讀取傾斜量的千分錶。53 個實體。沒有建置腳本，複製進 React 應用程式即可。 | 無 |
+| [`spot-plate`](examples/spot-plate) | 同一網站的第二張圖：點滴板上六對玻璃液滴，隨著一把厚薄規像扇子打開，匯成一整片玻璃。每一對都由同一個距離場畫出來。沒有建置腳本，複製進 React 應用程式即可。 | 無 |
+| [`turning-dial`](examples/turning-dial) | 3D 模式：會在真正的 3D 裡轉動的密碼轉盤，上面有一隻小機器人手、一根三個鉸鏈且抬得起來的手指，以及會當成自由體斷開的艙體。`stress.mjs` 是一隻放在雜亂工作室裡、有 380 個零件的手，用來量效能。 | `node examples/turning-dial/build.mjs` |
 
 Raptor 與街機機台也可列印。`node scripts/print.mjs examples/raptor-engine/sheet.mjs --format all` 會從已建置的淺色頁面寫出三份 A4 PDF：單頁海報、單頁技術圖與雙頁詳細說明。要求任何圖形的可列印版本時，Anatomy 會寫出其 `sheet.mjs`；詳見 [`references/print.md`](references/print.md)。
 
-`node examples/raptor-engine/build.mjs --audit`、`node examples/arcade-cabinet/build.mjs --audit` 與 `node examples/turning-dial/build.mjs --light --audit` 也會執行幾何審計。3D 審計較慢；詳見 [`references/3d.md`](references/3d.md)。
+`node examples/raptor-engine/build.mjs --audit`、`node examples/arcade-cabinet/build.mjs --audit` 與 `node examples/turning-dial/build.mjs --light --audit` 也會執行幾何稽核。3D 稽核較慢；詳見 [`references/3d.md`](references/3d.md)。
 
-## 運作原理
+<h2 id="how-it-works">運作原理</h2>
 
 - **[`SKILL.md`](SKILL.md)** 是 Claude 讀取的內容。它設定工作流程：先收集真實數字、發明物件、寫零件清單、規劃世界、用工具包一次建置幾何、由後往前繪製、加上框架、使其活起來，然後像評論者一樣驗證。它也以簡短形式保存工藝規則。
 - **[`kit/`](kit)** 是圖形建置所使用的繪圖庫：等角相機、實體與零件庫（`iso-kit`）、任意軸上的圓形零件（`lathe.mjs`）、管路與纜線（`tube.mjs`）、WebGL 層（`gl.mjs`）、3D 執行環境（`turn*.mjs`），以及 React 元件（`react/`）。除了那些元件所需的 React 外，沒有其他依賴。
 - **[`references/`](references)** 是 Claude 需要時會開啟的長篇指南：工藝、工具包 API、運動、React、驗證、WebGL、設計逐步說明與 3D 模式。
-- **驗證。** [`kit/audit.mjs`](kit/audit.mjs) 證明幾何正確：沒有東西穿過任何東西、每個端點都位於安裝點上、每個重疊都以深度順序繪製（`node build.mjs --audit`）。在無頭 Chrome 中，[`scripts/capture.mjs`](scripts/capture.mjs) 與 [`scripts/drive.mjs`](scripts/drive.mjs) 擷取截圖、特寫與放慢的接觸表，[`scripts/lines.mjs`](scripts/lines.mjs) 會讓任何在空中結束的線條失敗，[`scripts/turn-check.mjs`](scripts/turn-check.mjs) 檢查 3D 圖形。skill 會指示 Claude 讀取它產生的每一張 PNG。
+- **驗證。** [`kit/audit.mjs`](kit/audit.mjs) 證明幾何正確：沒有東西穿過任何東西、每個端點都位於安裝點上、每個重疊都以深度順序繪製（`node build.mjs --audit`）。在無頭 Chrome 中，[`scripts/capture.mjs`](scripts/capture.mjs) 與 [`scripts/drive.mjs`](scripts/drive.mjs) 擷取截圖、特寫與放慢的接觸印樣，[`scripts/lines.mjs`](scripts/lines.mjs) 會讓任何在空中結束的線條失敗，[`scripts/turn-check.mjs`](scripts/turn-check.mjs) 檢查 3D 圖形。skill 會指示 Claude 讀取它產生的每一張 PNG。
 
 <details>
 <summary><b>儲存庫結構</b></summary>
@@ -270,11 +275,11 @@ anatomy/
 │   ├── react/                draw.tsx（伺服器安全元件）、live.tsx（客戶端 hooks）
 │   ├── lathe.mjs             任意軸上的圓形零件
 │   ├── tube.mjs              管路、管子與纜線
-│   ├── audit.mjs             幾何審計
+│   ├── audit.mjs             幾何稽核
 │   ├── gl.mjs                繪圖內部著色器的 WebGL 層
 │   ├── turn.mjs              3D 執行環境（beta）
 │   ├── turn-build.mjs        3D 建置器
-│   ├── turn-audit.mjs        3D 軌道審計
+│   ├── turn-audit.mjs        3D 軌道稽核
 │   └── turn-fixed.mjs, canvas-painter.mjs, gl-shared.mjs
 │                             實驗性變體，尚未文件化或被範例使用
 ├── references/               Claude 需要時讀取的長篇指南
@@ -282,7 +287,7 @@ anatomy/
 │   └── verify.md  webgl.md  walkthrough.md  3d.md
 ├── scripts/                  無頭 Chrome 檢查與建置輔助
 │   ├── capture.mjs           截圖與特寫
-│   ├── drive.mjs             腳本化工作階段與接觸表
+│   ├── drive.mjs             腳本化工作階段與接觸印樣
 │   ├── lines.mjs             線條端點檢查（搭配 line-ends.mjs）
 │   ├── inline-kit.mjs        作為原始碼的工具包，可內嵌到獨立頁面
 │   ├── turn-check.mjs        瀏覽器中的 3D 檢查（搭配 turn-fidelity.mjs）
@@ -294,7 +299,7 @@ anatomy/
 
 </details>
 
-## 需求
+<h2 id="requirements">需求</h2>
 
 | | 用途 | 備註 |
 |---|---|---|
@@ -303,15 +308,15 @@ anatomy/
 | **Chrome 或 Chromium** | 檢查 | `capture.mjs`、`drive.mjs`、`lines.mjs` 與 `turn-check.mjs` 會在 macOS、Linux 與 Windows 的常見位置以及 Playwright 快取中尋找。其他二進位請設定 `CHROME_PATH`。它們以無頭模式執行並啟用 WebGL。 |
 | **React 18+** | 僅 React 輸出 | `kit/react/`、`examples/test-rig/` 與 `examples/spot-plate/`。 |
 
-## 限制
+<h2 id="limits">限制</h2>
 
 - **它不是圖表庫。** 沒有座標軸、系列或資料繪圖。數字以模型驅動的即時讀數出現，以及零件的真實尺寸與數量。
-- **它繪製機器、儀器、工具與家具。** 不是人物或精確地圖。沒有可建造機制的概念會輸出較弱的結果。
-- **它刻意緩慢。** 一張圖需要長時間工作階段：零件清單、幾何、審計，以及兩種主題中每個接頭的特寫。Raptor 的建置需數分鐘，完整 3D 軌道審計對 30 個零件需 15 到 20 分鐘。
-- **著色器需要 WebGL。** 沒有它時 SVG 仍可閱讀，在減少動態偏好下每張圖都會靜止。
+- **它畫的是機器、儀器、工具與家具。** 不畫人或精確地圖。一個沒有機構可以做出來的概念，成品會比較弱。
+- **它刻意緩慢。** 一張圖需要長時間工作階段：零件清單、幾何、稽核，以及兩種主題中每個接頭的特寫。Raptor 的建置需數分鐘，完整 3D 軌道稽核對 30 個零件需 15 到 20 分鐘。
+- **著色器需要 WebGL。** 沒有 WebGL 時，SVG 仍然讀得懂；若系統開啟「減少動態」，每張圖都會停住。
 
 > [!NOTE]
-> **3D 模式為 beta。** 它已在其範例與一個測試圖形上驗證，尚未在正式圖形上驗證。小型 3D 圖形以 60 fps 執行；380 零件的壓力手在 1440 px 寬度約 20 fps，在節流手機設定檔的重負載機器上為 13 到 15 fps。
+> **3D 模式仍是 beta。** 目前只在它自己的範例和一張測試圖上驗證過，還沒用在已上線的圖。小型 3D 圖可以跑到 60 fps；那隻 380 個零件、用來壓測的手，在 1440 px 寬時大約 20 fps，在負載很重的機器上、用節流後的手機設定來看，大約 13 到 15 fps。
 
 ## 分享圖形
 

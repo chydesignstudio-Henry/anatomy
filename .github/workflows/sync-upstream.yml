@@ -1,0 +1,162 @@
+# 每天約台北時間 03:00（19:00 UTC；台灣沒有日光節約時間）把此 fork 的預設分支
+# 與上游預設分支合併。另外可用 workflow_dispatch 手動跑。
+#
+# 使用 GitHub 的 merge-upstream API（與「Sync fork」相同），以 GITHUB_TOKEN
+# 建立 merge 或 fast-forward。不會 force-push，也不會呼叫 git refs 的 force 更新，
+# 因此 fork 自己新增的檔案（例如 README.zh-TW.md）會留著。
+# 若發生合併衝突或 API 拒絕（HTTP 409 / 422），工作流程失敗並開 issue，不覆蓋。
+
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync default branch with upstream
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Merge upstream into the default branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          meta=$(gh repo view "$REPO" --json isFork,defaultBranchRef,parent)
+          is_fork=$(jq -r '.isFork' <<<"$meta")
+          branch=$(jq -r '.defaultBranchRef.name' <<<"$meta")
+          upstream=$(jq -r 'if .parent != null then .parent.owner.login + "/" + .parent.name else "" end' <<<"$meta")
+
+          if [[ "$is_fork" != "true" || -z "$upstream" || "$upstream" == "/" ]]; then
+            echo "::error title=不是 fork::${REPO} 沒有上游 parent，無法同步。"
+            exit 1
+          fi
+
+          {
+            echo "### 上游同步"
+            echo
+            echo "- Fork：\`${REPO}\`"
+            echo "- 預設分支：\`${branch}\`"
+            echo "- 上游：[\`${upstream}\`](https://github.com/${upstream})"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "Syncing ${REPO}@${branch} from ${upstream} via POST /merge-upstream (no force)."
+
+          set +e
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPO}/merge-upstream" \
+            -f "branch=${branch}" \
+            > /tmp/sync-out.txt \
+            2> /tmp/sync-err.txt
+          status=$?
+          set -e
+
+          if [[ "$status" -eq 0 ]]; then
+            cat /tmp/sync-out.txt
+            merge_type=$(jq -r '.merge_type // "unknown"' /tmp/sync-out.txt)
+            message=$(jq -r '.message // ""' /tmp/sync-out.txt)
+            {
+              echo
+              echo "結果：\`${merge_type}\`。${message}"
+              echo
+              echo "沒有 force-push。fork 自己的提交與檔案都保留。"
+            } >> "$GITHUB_STEP_SUMMARY"
+            case "$merge_type" in
+              merge|fast-forward|none)
+                exit 0
+                ;;
+              *)
+                echo "::error title=未預期的 merge_type::${merge_type}"
+                exit 1
+                ;;
+            esac
+          fi
+
+          echo "::error title=上游同步失敗::${branch} 沒有被覆蓋。請看 log；若是衝突或被拒絕，會另開 issue。"
+          echo "----- stdout -----"
+          cat /tmp/sync-out.txt || true
+          echo "----- stderr -----"
+          cat /tmp/sync-err.txt || true
+
+          http_code=$(grep -oE 'HTTP [0-9]+' /tmp/sync-err.txt | awk 'END { print $2 }' || true)
+          echo "HTTP status: ${http_code:-unknown}"
+
+          # 409：合併衝突。422：其他拒絕（含 GITHUB_TOKEN 不能寫入 workflow 檔）。
+          # 其餘錯誤（網路、5xx）只讓這次 run 變紅，避免暫時性故障洗版開 issue。
+          if [[ "$http_code" != "409" && "$http_code" != "422" ]]; then
+            echo "Not opening an issue for HTTP ${http_code:-unknown}."
+            exit 1
+          fi
+
+          if [[ "$http_code" == "409" ]]; then
+            kind="合併衝突"
+          else
+            kind="同步被拒"
+          fi
+
+          title="[upstream-sync] ${kind}：${upstream} → ${branch}"
+          issue_body=$(mktemp)
+          cat > "$issue_body" <<EOF
+          自動與上游同步時失敗。這次**沒有** force-push，也沒有捨棄此 fork 自己新增的檔案。
+
+          | | |
+          |---|---|
+          | Fork | \`${REPO}\` |
+          | 預設分支 | \`${branch}\` |
+          | 上游 | [${upstream}](https://github.com/${upstream}) |
+          | 類型 | ${kind}（HTTP ${http_code}） |
+          | 執行紀錄 | ${RUN_URL} |
+
+          請在本機把上游的預設分支合併進來、解決衝突後，用一般的 merge commit 推送。不要使用 \`git push --force\` 或 \`gh repo sync --force\`，否則會蓋掉 \`README.zh-TW.md\` 與 \`.github/workflows/sync-upstream.yml\` 這類只存在於此 fork 的檔案。
+
+          若錯誤提到 \`workflows\` permission 或 \`workflow\` scope，代表上游這次改到 \`.github/workflows/\`。Actions 內建的 \`GITHUB_TOKEN\` 無法寫入 workflow 檔，這次同步會被拒絕；請改用有 workflow 權限的身分手動合併。
+          EOF
+
+          {
+            echo
+            echo "錯誤輸出："
+            echo
+            echo '```text'
+            head -c 4000 /tmp/sync-err.txt || true
+            echo
+            head -c 2000 /tmp/sync-out.txt || true
+            echo
+            echo '```'
+          } >> "$issue_body"
+
+          existing=$(gh issue list \
+            --repo "$REPO" \
+            --state open \
+            --limit 50 \
+            --json number,title \
+            --jq '[.[] | select(.title | startswith("[upstream-sync]"))] | .[0].number // empty')
+
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --repo "$REPO" --body-file "$issue_body"
+            echo "Commented on existing issue #${existing}"
+            echo >> "$GITHUB_STEP_SUMMARY"
+            echo "已在既有 issue #${existing} 留言。" >> "$GITHUB_STEP_SUMMARY"
+          else
+            url=$(gh issue create --repo "$REPO" --title "$title" --body-file "$issue_body")
+            echo "Opened ${url}"
+            echo >> "$GITHUB_STEP_SUMMARY"
+            echo "已開 issue：${url}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          exit 1
